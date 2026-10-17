@@ -25,7 +25,7 @@ _Avoid_: Link, edge (when talking about the domain rather than the drawing)
 ### Architecture rules
 
 **Level**:
-A declared architectural rank for a top-level Component; a lower Level is more inner (higher-level policy). Independent of nesting depth.
+A declared architectural rank assigned to a Component; a lower Level is more inner (higher-level policy). A Module takes the Level of its nearest ranked ancestor Component. Independent of nesting depth.
 _Avoid_: Layer, tier, depth
 
 **Violation**:
