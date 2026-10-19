@@ -7,13 +7,12 @@ import { scan } from "../../src/scanner/scan.js";
 
 const fixture = (name: string) => fileURLToPath(new URL(`../fixtures/${name}`, import.meta.url));
 
-/** A copy of a fixture whose Policy file is replaced, for testing Policy validation. */
-function fixtureWithPolicy(name: string, policyYaml: string): string {
+/** A copy of a fixture with some files added or replaced. Returns the copy's Policy file. */
+function fixtureWith(name: string, files: Record<string, string>): string {
   const dir = mkdtempSync(path.join(tmpdir(), `${name}-`));
   cpSync(fixture(name), dir, { recursive: true });
-  const policyFile = path.join(dir, "arch-viewer.policy.yaml");
-  writeFileSync(policyFile, policyYaml);
-  return policyFile;
+  for (const [file, content] of Object.entries(files)) writeFileSync(path.join(dir, file), content);
+  return path.join(dir, "arch-viewer.policy.yaml");
 }
 
 const dep = (from: string, to: string) => ({ from, to, violation: false, allowed: false });
@@ -44,15 +43,27 @@ describe("scan: TypeScript / JavaScript", () => {
   });
 });
 
+describe("scan: Module ids", () => {
+  it("fails, naming both files, when a barrel and a sibling file would share a Module id", async () => {
+    const policyFile = fixtureWith("ts-basic", { "src/domain.ts": "export const clash = 1;\n" });
+
+    await expect(scan(policyFile)).rejects.toThrow(/src\/domain\.ts.*src\/domain\/index\.ts|src\/domain\/index\.ts.*src\/domain\.ts/s);
+  });
+});
+
 describe("scan: Policy validation", () => {
   it("names the offending key when a value is invalid", async () => {
-    const policyFile = fixtureWithPolicy("ts-basic", "title: x\nsources:\n  - lang: cobol\n    root: src\nout: x.json\n");
+    const policyFile = fixtureWith("ts-basic", {
+      "arch-viewer.policy.yaml": "title: x\nsources:\n  - lang: cobol\n    root: src\nout: x.json\n",
+    });
 
     await expect(scan(policyFile)).rejects.toThrow(/sources\.0\.lang/);
   });
 
   it("rejects unknown keys so typos are not silently ignored", async () => {
-    const policyFile = fixtureWithPolicy("ts-basic", "title: x\nsources: [{ lang: typescript, root: src }]\nout: x.json\nlevles: [[core]]\n");
+    const policyFile = fixtureWith("ts-basic", {
+      "arch-viewer.policy.yaml": "title: x\nsources: [{ lang: typescript, root: src }]\nout: x.json\nlevles: [[core]]\n",
+    });
 
     await expect(scan(policyFile)).rejects.toThrow(/levles/);
   });

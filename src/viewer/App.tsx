@@ -14,7 +14,7 @@ export function App() {
   useEffect(() => {
     fetch("/ir.json")
       .then((response) => {
-        if (!response.ok) throw new Error(`Could not load the IR (${response.status}). Run \`pnpm scan\` first.`);
+        if (!response.ok) throw new Error(`Could not load the IR from the arch-viewer server (HTTP ${response.status}).`);
         return response.json() as Promise<IR>;
       })
       .then((ir) => {

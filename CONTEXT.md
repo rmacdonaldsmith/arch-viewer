@@ -7,7 +7,7 @@ An interactive diagram of a codebase's structure that lets you drill from compon
 ### Structure
 
 **Module**:
-One source unit (a TS/JS file, or a Java top-level type with its nested types), and the smallest thing drawn on the diagram.
+One source unit (a TS/JS file, or a Java top-level type with its nested types), and the smallest thing drawn on the diagram. Identified by its path from the source root; no two Modules may share an id.
 _Avoid_: Class (unless the scanner emits a real class), file, unit
 
 **Build module**:

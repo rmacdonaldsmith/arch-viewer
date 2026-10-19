@@ -2,7 +2,7 @@ import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { loadPolicy } from "../core/policy.js";
-import { scan } from "../scanner/scan.js";
+import { scan, scanProject } from "../scanner/scan.js";
 import { serve } from "../server/server.js";
 
 const DEFAULT_POLICY = "arch-viewer.policy.yaml";
@@ -34,8 +34,10 @@ async function main(argv: string[]): Promise<void> {
 }
 
 async function scanCommand(policyFile: string): Promise<void> {
-  const ir = await scan(policyFile);
-  const outFile = path.resolve(path.dirname(policyFile), loadPolicy(policyFile).out);
+  const policy = loadPolicy(policyFile);
+  const projectRoot = path.dirname(path.resolve(policyFile));
+  const ir = await scanProject(policy, projectRoot);
+  const outFile = path.resolve(projectRoot, policy.out);
   writeFileSync(outFile, JSON.stringify(ir, null, 2) + "\n");
   console.log(`${ir.modules.length} Modules, ${ir.dependencies.length} Dependencies → ${path.relative(process.cwd(), outFile)}`);
 }

@@ -10,7 +10,7 @@ Needs Node 22+ and pnpm.
 
 ```bash
 pnpm install
-pnpm exec vite build                 # build the viewer (once, and after viewer changes)
+pnpm build                           # build the viewer (once, and after viewer changes)
 pnpm start [policy-file] [--port n]  # scan, then serve the diagram (prints the URL)
 pnpm scan [policy-file]              # scan only: write the IR to the Policy's `out`
 ```

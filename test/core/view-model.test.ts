@@ -44,6 +44,22 @@ describe("viewModel at the top level", () => {
     ]);
   });
 
+  it("keeps a root Module and a Component with the same name as distinct nodes", () => {
+    const clashing: IR = {
+      ...ir,
+      modules: [mod("domain", []), mod("domain/order", ["domain"])],
+      dependencies: [dep("domain", "domain/order")],
+    };
+
+    expect(viewModel(clashing)).toEqual({
+      nodes: [
+        { id: "component:domain", kind: "component", label: "domain" },
+        { id: "module:domain", kind: "module", label: "domain" },
+      ],
+      edges: [{ from: "module:domain", to: "component:domain", dependencies: [dep("domain", "domain/order")] }],
+    });
+  });
+
   it("collapses Dependencies into one edge per node pair, keeping the bundled pairs, and drops internal ones", () => {
     expect(viewModel(ir).edges).toEqual([
       {

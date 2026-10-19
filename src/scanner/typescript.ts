@@ -3,8 +3,8 @@ import path from "node:path";
 import { Project, type SourceFile } from "ts-morph";
 import type { Dependency, Module } from "../core/ir.js";
 
-const SOURCE_GLOB = "**/*.{ts,tsx,js,jsx,mjs,cjs}";
-const SKIPPED = [/\.d\.ts$/, /\.(test|spec)\.[cm]?[jt]sx?$/, /(^|\/)(node_modules|dist)\//];
+const SOURCE_GLOB = "**/*.{ts,tsx,js,jsx}";
+const SKIPPED = [/\.d\.ts$/, /\.(test|spec)\.[jt]sx?$/, /(^|\/)(node_modules|dist)\//];
 
 export type Scan = { modules: Module[]; dependencies: Dependency[] };
 

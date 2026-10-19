@@ -1,3 +1,4 @@
+import { compareEnds, compareText } from "./compare.js";
 import type { Dependency, IR, Module } from "./ir.js";
 
 export type VisibleNode = { id: string; kind: "component" | "module"; label: string };
@@ -6,6 +7,11 @@ export type VisibleNode = { id: string; kind: "component" | "module"; label: str
 export type VisibleEdge = { from: string; to: string; dependencies: Dependency[] };
 
 export type ViewModel = { nodes: VisibleNode[]; edges: VisibleEdge[] };
+
+/** Identifies a visible edge by its ends. */
+export function edgeKey(edge: { from: string; to: string }): string {
+  return `${edge.from} -> ${edge.to}`;
+}
 
 /** What to draw at the top level: Components collapse their contents, and Dependencies collapse into one edge per node pair. */
 export function viewModel(ir: IR): ViewModel {
@@ -19,12 +25,12 @@ export function viewModel(ir: IR): ViewModel {
     const to = nodeByModuleId.get(dependency.to);
     if (!from || !to || from.id === to.id) continue;
 
-    const key = `${from.id} -> ${to.id}`;
+    const key = edgeKey({ from: from.id, to: to.id });
     const edge = edgesByPair.get(key) ?? { from: from.id, to: to.id, dependencies: [] };
     edge.dependencies.push(dependency);
     edgesByPair.set(key, edge);
   }
-  const edges = [...edgesByPair.values()].sort((a, b) => a.from.localeCompare(b.from) || a.to.localeCompare(b.to));
+  const edges = [...edgesByPair.values()].sort(compareEnds);
 
   return { nodes, edges };
 }
@@ -41,4 +47,4 @@ function uniqueById(nodes: VisibleNode[]): VisibleNode[] {
   return [...new Map(nodes.map((node) => [node.id, node])).values()];
 }
 
-const byId = (a: VisibleNode, b: VisibleNode) => a.id.localeCompare(b.id);
+const byId = (a: VisibleNode, b: VisibleNode) => compareText(a.id, b.id);

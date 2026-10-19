@@ -1,9 +1,9 @@
 import ELK, { type ElkNode } from "elkjs/lib/elk.bundled.js";
-import type { ViewModel, VisibleNode } from "../core/view-model.js";
+import { edgeKey, type ViewModel, type VisibleNode } from "../core/view-model.js";
 
 export type Point = { x: number; y: number };
 export type PlacedNode = VisibleNode & { x: number; y: number; width: number; height: number };
-export type PlacedEdge = { from: string; to: string; points: Point[]; count: number };
+export type PlacedEdge = { from: string; to: string; points: Point[] };
 export type Layout = { width: number; height: number; nodes: PlacedNode[]; edges: PlacedEdge[] };
 
 const PADDING_X = 16;
@@ -12,7 +12,7 @@ const NODE_HEIGHT = 40;
 const elk = new ELK();
 
 /** Positions the visible graph with ELK's layered algorithm and orthogonal edge routing. */
-export async function layout(graph: ViewModel, measureText: (text: string) => number): Promise<Layout> {
+export async function layout(view: ViewModel, measureText: (text: string) => number): Promise<Layout> {
   const result: ElkNode = await elk.layout({
     id: "root",
     layoutOptions: {
@@ -22,20 +22,20 @@ export async function layout(graph: ViewModel, measureText: (text: string) => nu
       "elk.spacing.nodeNode": "40",
       "elk.layered.spacing.nodeNodeBetweenLayers": "60",
     },
-    children: graph.nodes.map((node) => ({
+    children: view.nodes.map((node) => ({
       id: node.id,
       width: measureText(node.label) + 2 * PADDING_X,
       height: NODE_HEIGHT,
     })),
-    edges: graph.edges.map((edge) => ({
-      id: `${edge.from} -> ${edge.to}`,
+    edges: view.edges.map((edge) => ({
+      id: edgeKey(edge),
       sources: [edge.from],
       targets: [edge.to],
     })),
   });
 
-  const nodeById = new Map(graph.nodes.map((node) => [node.id, node]));
-  const edgeById = new Map(graph.edges.map((edge) => [`${edge.from} -> ${edge.to}`, edge]));
+  const nodeById = new Map(view.nodes.map((node) => [node.id, node]));
+  const edgeById = new Map(view.edges.map((edge) => [edgeKey(edge), edge]));
 
   return {
     width: result.width ?? 0,
@@ -51,7 +51,7 @@ export async function layout(graph: ViewModel, measureText: (text: string) => nu
       const edge = edgeById.get(elkEdge.id)!;
       const section = elkEdge.sections?.[0];
       const points = section ? [section.startPoint, ...(section.bendPoints ?? []), section.endPoint] : [];
-      return { from: edge.from, to: edge.to, points, count: edge.dependencies.length };
+      return { from: edge.from, to: edge.to, points };
     }),
   };
 }

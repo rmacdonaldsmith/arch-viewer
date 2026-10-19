@@ -3,7 +3,7 @@ import { parse } from "yaml";
 import { z } from "zod";
 
 const SourceSchema = z.strictObject({
-  lang: z.enum(["typescript", "java"]),
+  lang: z.literal("typescript"),
   root: z.string().min(1),
 });
 

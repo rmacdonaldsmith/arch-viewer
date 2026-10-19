@@ -1,3 +1,4 @@
+import { edgeKey } from "../core/view-model.js";
 import type { Layout, PlacedEdge, PlacedNode } from "./layout.js";
 
 const MARGIN = 24;
@@ -16,7 +17,7 @@ export function Diagram({ layout }: { layout: Layout }) {
         </marker>
       </defs>
       {layout.edges.map((edge) => (
-        <Edge key={`${edge.from} -> ${edge.to}`} edge={edge} />
+        <Edge key={edgeKey(edge)} edge={edge} />
       ))}
       {layout.nodes.map((node) => (
         <Node key={node.id} node={node} />
@@ -39,8 +40,6 @@ function Node({ node }: { node: PlacedNode }) {
 function Edge({ edge }: { edge: PlacedEdge }) {
   const d = edge.points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
   return (
-    <path className="edge" data-edge-from={edge.from} data-edge-to={edge.to} d={d} markerEnd="url(#open-arrow)">
-      <title>{`${edge.from} → ${edge.to} (${edge.count} ${edge.count === 1 ? "dependency" : "dependencies"})`}</title>
-    </path>
+    <path className="edge" data-edge-from={edge.from} data-edge-to={edge.to} d={d} markerEnd="url(#open-arrow)" />
   );
 }

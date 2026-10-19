@@ -7,8 +7,9 @@
     "node": ">=22"
   },
   "scripts": {
+    "build": "vite build",
     "test": "vitest run",
-    "test:e2e": "vite build && playwright test",
+    "test:e2e": "pnpm build && playwright test",
     "typecheck": "tsc --noEmit && tsc --noEmit -p src/viewer",
     "lint": "eslint .",
     "scan": "tsx src/cli/main.ts scan",

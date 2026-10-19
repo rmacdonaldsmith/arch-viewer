@@ -20,7 +20,7 @@ export type Serving = { url: string; close: () => Promise<void> };
 /** Serves the built viewer and the IR at `/ir.json`. Port 0 picks a free port. */
 export async function serve(ir: IR, port: number): Promise<Serving> {
   if (!existsSync(path.join(VIEWER_DIR, "index.html"))) {
-    throw new Error(`The viewer is not built (${VIEWER_DIR}). Run \`pnpm build\` first.`);
+    throw new Error(`The viewer is not built (${VIEWER_DIR}). Run \`pnpm build\` in the arch-viewer repo first.`);
   }
 
   const server = createServer((request, response) => {
