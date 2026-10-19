@@ -1,0 +1,6 @@
+node_modules
+dist
+arch-viewer.ir.json
+test-results
+playwright-report
+test/fixtures/**/*.ir.json

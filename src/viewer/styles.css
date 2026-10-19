@@ -1,0 +1,67 @@
+:root {
+  --ground: #fafaf9;
+  --ink: #1c1917;
+  --muted: #78716c;
+  --box: #ffffff;
+  --line: #a8a29e;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #1c1917;
+    --ink: #f5f5f4;
+    --muted: #a8a29e;
+    --box: #292524;
+    --line: #78716c;
+    color-scheme: dark;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 14px system-ui, sans-serif;
+}
+
+main {
+  padding: 16px 24px;
+}
+
+h1 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+.error {
+  color: #dc2626;
+}
+
+.node rect {
+  fill: var(--box);
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.node text {
+  fill: var(--ink);
+}
+
+/* Components are not Modules: their names are italic, as in UML package names. */
+.node.component text {
+  font-style: italic;
+}
+
+.edge {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.arrowhead {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.5;
+}

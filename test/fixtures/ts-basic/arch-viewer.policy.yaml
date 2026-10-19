@@ -1,0 +1,5 @@
+title: ts-basic
+sources:
+  - lang: typescript
+    root: src
+out: ts-basic.ir.json

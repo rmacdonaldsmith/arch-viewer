@@ -1,0 +1,6 @@
+# arch-viewer viewing itself.
+title: arch-viewer
+sources:
+  - lang: typescript
+    root: src
+out: arch-viewer.ir.json
