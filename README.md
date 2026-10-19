@@ -2,7 +2,7 @@
 
 Interactive architecture diagrams of a codebase. Drill from Components down to Modules and on to source, and see where Dependencies break your declared architecture (Violations of the dependency rule).
 
-Status: design phase, building v1. See [v1 scope](docs/v1-scope.md), the [glossary](CONTEXT.md), and the [ADRs](docs/adr/).
+Status: design phase. See the [glossary](CONTEXT.md) and the [ADRs](docs/adr/).
 
 ## Credits
 
